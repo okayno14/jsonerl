@@ -100,6 +100,8 @@ json_encode([{_,_}|_]=Array, State) when is_list(Array) ->
     json_encode_proplist(Array, State);
 json_encode(Array, State) when is_list(Array) ->
     json_encode_array(Array, State);
+json_encode({binary, _, S}=Tuple, State) when is_tuple(Tuple) ->
+    json_encode_string(S, State);
 json_encode(Bad, #encoder{handler=null}) ->
     exit({json_encode, {bad_term, Bad}});
 json_encode(Bad, State=#encoder{handler=Handler}) ->
