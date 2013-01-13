@@ -1,3 +1,8 @@
+This is modified version of modified version.
+Just tried to make it type-compatible with emongo_bson.
+
+=======================================================
+
 It is modified version on Bob Ippolito's <bob@mochimedia.com> mochijson2 module, one can find in excellent mochiweb, erlang webserver.
 
 Yet another JSON (RFC 4627) library for Erlang. jsonerl works with binaries as strings, arrays as lists (without an {array, _}) wrapper and it only knows how to decode UTF-8 (and ASCII).
@@ -21,7 +26,7 @@ Erlang data type:        =>          JavaScript data type:        =>          Er
 
 7.    binary                               string                                   binary   
 
-8.    proptuple                            object                                   proptuple
+8.    proplist                             object                                   proplist
 -----------------------------------------------------------------------------------------------
 
 Note: proptuple is result of passing proplist to list_to_atom bif ;)
@@ -39,13 +44,13 @@ Eg. JavaScript object
 
 results in
 
-{
+[
   {<<"name">>, <<"Luc Besson">>},
   {<<"year_of_birth">>, 1959},
   {<<"city">>, <<"Paris">>},
   {<<"photo">>, <<"http://is.gd/3pYJF">>},
   {<<"movies">>, [<<"Taken">>,<<"Bandidas">>,<<"Taxi">>]}
-}
+]
 
 -----------------------------------------------------------------------------------------------
 
