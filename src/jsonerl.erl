@@ -539,7 +539,7 @@ equiv_object(T1, T2) ->
     end,
     G(X1, X2, G)
   end,
-  
+
   L1 = lists:sort(SortFun, tuple_to_list(T1)),
   L2 = lists:sort(SortFun, tuple_to_list(T2)),
   Pairs = lists:zip(L1, L2),
@@ -618,7 +618,7 @@ e2j_test_vec(utf8) ->
      {[-123, <<"foo">>, obj_from_list([{<<"bar">>, []}]), null],
       "[-123,\"foo\",{\"bar\":[]},null]"}
     ].
-    
+
 % ------ utils
 
 to_ex_a(A) when is_atom(A) -> A;
@@ -627,4 +627,4 @@ to_ex_a(B) when is_binary(B) ->
 to_ex_a(S) when is_list(S) ->
   list_to_existing_atom(S);
 to_ex_a(T) ->
-  to_ex_a(io_lib:print(T)).    
+  to_ex_a(io_lib:print(T)).

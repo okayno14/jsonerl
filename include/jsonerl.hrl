@@ -29,7 +29,7 @@
           case dict:find(Field, ValuesByFieldsDict) of
             {ok, Value} -> Value;
             error -> undefined
-          end  
+          end
         end,
         % getting the record field names in the order the tuple representing the record instance has its values
         record_info(fields, RecordName)
@@ -53,18 +53,18 @@
 ).
 
 -define(list_records_to_json(RecordName, List),
-		    L___ = length(List),
-				Zipped___ = lists:zip(lists:seq(1,L___),List),
-				Quotes___ = lists:map(
-						fun({N___,X___}) ->
-										case L___ == N___ of
-												false ->
-														Json___ = jsonerl:encode(?record_to_struct(RecordName,X___)),
-														Json___ ++ ",";
-												true -> jsonerl:encode(?record_to_struct(RecordName,X___))
-										end
-						end, Zipped___),
-				lists:flatten(io_lib:format("~s",["["++Quotes___++"]"]))).
+            L___ = length(List),
+                Zipped___ = lists:zip(lists:seq(1,L___),List),
+                Quotes___ = lists:map(
+                        fun({N___,X___}) ->
+                                        case L___ == N___ of
+                                                false ->
+                                                        Json___ = jsonerl:encode(?record_to_struct(RecordName,X___)),
+                                                        Json___ ++ ",";
+                                                true -> jsonerl:encode(?record_to_struct(RecordName,X___))
+                                        end
+                        end, Zipped___),
+                lists:flatten(io_lib:format("~s",["["++Quotes___++"]"]))).
 
 -define(json_to_record(RecordName, Json),
   % decode json text to erlang struct
