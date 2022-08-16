@@ -96,12 +96,10 @@ json_encode(F, _State) when is_float(F) ->
     mochinum:digits(F);
 json_encode(S, State) when is_binary(S); is_atom(S) ->
     json_encode_string(S, State);
-json_encode([{_,_}|_]=Array, State) when is_list(Array) ->
-    json_encode_proplist(Array, State);
 json_encode(Array, State) when is_list(Array) ->
     json_encode_array(Array, State);
-json_encode({binary, _, S}=Tuple, State) when is_tuple(Tuple) ->
-    json_encode_string(S, State);
+json_encode(Tuples, State) when is_tuple(Tuples) ->
+    json_encode_proplist(Tuples, State);
 json_encode(Bad, #encoder{handler=null}) ->
     exit({json_encode, {bad_term, Bad}});
 json_encode(Bad, State=#encoder{handler=Handler}) ->
@@ -116,15 +114,15 @@ json_encode_array(L, State) ->
     [$, | Acc1] = lists:foldl(F, "[", L),
     lists:reverse([$\] | Acc1]).
 
-json_encode_proplist([], _State) ->
+json_encode_proplist({}, _State) ->
     <<"{}">>;
-json_encode_proplist(Proplist, State) when is_list(Proplist) ->
+json_encode_proplist(Tuples, State) when is_tuple(Tuples) ->
     F = fun ({K, V}, Acc) ->
                 KS = json_encode_string(K, State),
                 VS = json_encode(V, State),
                 [$,, VS, $:, KS | Acc]
         end,
-    [$, | Acc1] = lists:foldl(F, "{", Proplist),
+    [$, | Acc1] = lists:foldl(F, "{", tuple_to_list(Tuples)),
     lists:reverse([$\} | Acc1]).
 
 json_encode_string(A, _State) when is_atom(A) ->
@@ -284,7 +282,7 @@ decode_object(B, S) ->
 decode_object(B, S=#decoder{state=key}, Acc) ->
     case tokenize(B, S) of
         {end_object, S1} ->
-            V = make_object(lists:reverse(Acc), S1),
+            V = make_object(list_to_tuple(lists:reverse(Acc)), S1),
             {V, S1#decoder{state=null}};
         {{const, K}, S1} ->
             {colon, S2} = tokenize(B, S1),
@@ -294,7 +292,7 @@ decode_object(B, S=#decoder{state=key}, Acc) ->
 decode_object(B, S=#decoder{state=comma}, Acc) ->
     case tokenize(B, S) of
         {end_object, S1} ->
-            V = make_object(lists:reverse(Acc), S1),
+            V = make_object(list_to_tuple(lists:reverse(Acc)), S1),
             {V, S1#decoder{state=null}};
         {comma, S1} ->
             decode_object(B, S1#decoder{state=key}, Acc)
@@ -539,7 +537,7 @@ equiv_object(T1, T2) ->
     end,
     G(X1, X2, G)
   end,
-
+  
   L1 = lists:sort(SortFun, tuple_to_list(T1)),
   L2 = lists:sort(SortFun, tuple_to_list(T2)),
   Pairs = lists:zip(L1, L2),
@@ -618,7 +616,7 @@ e2j_test_vec(utf8) ->
      {[-123, <<"foo">>, obj_from_list([{<<"bar">>, []}]), null],
       "[-123,\"foo\",{\"bar\":[]},null]"}
     ].
-
+    
 % ------ utils
 
 to_ex_a(A) when is_atom(A) -> A;
@@ -627,4 +625,4 @@ to_ex_a(B) when is_binary(B) ->
 to_ex_a(S) when is_list(S) ->
   list_to_existing_atom(S);
 to_ex_a(T) ->
-  to_ex_a(io_lib:print(T)).
+  to_ex_a(io_lib:print(T)).    
