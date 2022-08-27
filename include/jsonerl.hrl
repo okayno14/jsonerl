@@ -64,4 +64,4 @@
   %{<<"key">>,ArrayOfStructs}
   ArrayOfStructs=element(2,element(1,jsonerl:decode(Json))),
   lists:map(fun(Elem)->?struct_to_record(RecordName, Elem) end, ArrayOfStructs);
-)
+).
