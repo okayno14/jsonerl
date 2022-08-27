@@ -56,3 +56,12 @@
   % decode json text to erlang struct
   ?struct_to_record(RecordName, jsonerl:decode(Json))
 ).
+
+%parse JSON-object: {arr:[{},{},...{}]}
+%returns array of records
+-define(json_array_to_record_array(RecordName,Json),
+  %JSON converts to struct, which contains 1 tuple:
+  %{<<"key">>,ArrayOfStructs}
+  ArrayOfStructs=element(2,element(1,jsonerl:decode(Json))),
+  lists:map(fun(Elem)->?struct_to_record(RecordName, Elem) end, ArrayOfStructs);
+)
